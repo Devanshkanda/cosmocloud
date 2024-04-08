@@ -1,9 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from models.students_model import StudentModel
-from schema.schemas import individual_serial, list_serial
+from schema.schemas import individual_student_serial, list_serial
 from bson import ObjectId
 from main import db
-from functools import lru_cache
 
 
 student_collection = db['student']
