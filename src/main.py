@@ -7,8 +7,9 @@ env = EnvConfigSettings()
 
 db = get_db_connection(env.mongodb_uri, env.db_name)
 
-from routers import students
+from routers import students, author_routes
 app.include_router(students.router)
+app.include_router(author_routes.router)
 
 print(env.mongodb_uri, env.db_name, env.test_name)
 print("world")

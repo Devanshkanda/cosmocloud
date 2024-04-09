@@ -35,24 +35,31 @@ async def get_all_student_detail():
 
 @router.get("/{student_id}", status_code=200)
 async def get_student_detail(student_id: str):
-    if student_id == 2:
-        raise HTTPException(status_code=404, detail={'error': 'student id cannot be 2'})
+    if not student_id:
+        raise HTTPException(
+            status_code=404, 
+            detail={'error': 'student id cannot be 2'}
+        )
+    
     return {
-        "mesg": "student details fetched successfully",
+        "message": "student details fetched successfully",
+        "status": 200,
         "data": list_serial(student_collection.find({"_id": ObjectId(student_id)}))
     }
 
 
 @router.post("/", status_code=201, tags=["student"], summary="Insert student details")
 async def insert_student_details(stud: StudentModel):
-    # if stud.id in StudentModel:
-    #     raise HTTPException(
-    #         status_code=401, 
-    #         detail={"error": "Student detail already present"}
-    #     )
+    student = student_collection.find_one(filter={"email": str(stud.email)})
+
+    if student:
+        raise HTTPException(401, detail={"error": "student already exists"})
     
     res = student_collection.insert_one(dict(stud))
+    stud.id = str(res.inserted_id)
     
     return {
-        "success": list_serial(res)
+        "message": "Student data inserted successfully",
+        "status": 201,
+        "student id": str(res.inserted_id)
     }
