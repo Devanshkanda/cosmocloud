@@ -63,3 +63,18 @@ async def insert_student_details(stud: StudentModel):
         "status": 201,
         "student id": str(res.inserted_id)
     }
+
+@router.delete("/{stud_id}", status_code=200)
+async def delete_student_details(stud_id: str):
+
+    fetch_student = student_collection.find_one(filter={"_id": ObjectId(stud_id)})
+
+    if not fetch_student:
+        raise HTTPException(404, {"error": "no student exists"})
+    
+    student_collection.delete_one({"_id": ObjectId(stud_id)})
+
+    return {
+        "success": "Student record deleted successfully",
+        "status": 200
+    }
